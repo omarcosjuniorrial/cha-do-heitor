@@ -20,7 +20,9 @@ export default async function handler(request) {
   try { body = await request.json(); } catch { return json({ error: 'Solicitação inválida.' }, 400); }
   try {
     const store = getStore({ name: 'presentes-heitor', consistency: 'strong' });
-    const result = await runGiftAction(store, body);
+    // The password is defined only in Netlify's server-side environment, never in public JS.
+    const adminSecret = typeof Netlify !== 'undefined' ? (Netlify.env.get('HEITOR_ADMIN_PASSWORD') || '') : '';
+    const result = await runGiftAction(store, body, adminSecret);
     return json(result, result.status || 200);
   } catch (error) {
     console.error('Não foi possível acessar a lista de presentes:', error);

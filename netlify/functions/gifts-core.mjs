@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { createHash, timingSafeEqual } from 'node:crypto';
 import { GIFTS } from '../../data/gifts.mjs';
 
 const byId = new Map(GIFTS.map((gift) => [gift.id, gift]));
@@ -90,7 +90,41 @@ async function release(store, id, hash) {
   return { released };
 }
 
-export async function runGiftAction(store, body) {
+async function adminRelease(store, id) {
+  const gift = byId.get(id);
+  if (!gift) return { error: 'Mimo inválido.', status: 400 };
+  for (let slot = 1; slot <= gift.desired; slot++) {
+    const key = keyFor(id, slot);
+    const old = await readSlot(store, key);
+    if (!old || old.data?.released) continue;
+    const updated = await writeSlot(store, key, { released: true, savedAt: new Date().toISOString() }, old);
+    if (updated.modified) return { released: 1, id, slot };
+  }
+  return { error: 'Este mimo não possui unidades reservadas para liberar.', status: 409 };
+}
+
+function validAdminPassword(received, configured) {
+  if (typeof received !== 'string' || received.length > 128) return false;
+  // Compare digests to keep timing independent of string length.
+  const a = createHash('sha256').update(received).digest();
+  const b = createHash('sha256').update(configured).digest();
+  return timingSafeEqual(a, b);
+}
+
+export async function runGiftAction(store, body, adminSecret = '') {
+  if (!body || typeof body.action !== 'string') return { error: 'Operação inválida.', status: 400 };
+  if (body.action === 'adminStatus' || body.action === 'adminRelease') {
+    if (typeof adminSecret !== 'string' || adminSecret.length < 12)
+      return { error: 'A senha administrativa ainda não foi configurada no Netlify.', status: 503 };
+    if (!validAdminPassword(body.password, adminSecret))
+      return { error: 'Senha incorreta.', status: 401 };
+    if (body.action === 'adminStatus') {
+      const { inventory } = await readAll(store);
+      return { inventory };
+    }
+    return adminRelease(store, body.id);
+  }
+
   if (!body || !validToken(body.token)) return { error: 'Identificação do navegador inválida.', status: 400 };
   const hash = tokenHash(body.token);
   if (body.action === 'status') return readAll(store, hash);

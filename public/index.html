@@ -38,6 +38,22 @@
 .sync-status:empty{display:none}
 .sync-status button{padding:4px 9px;border:1px solid currentColor;border-radius:4px;background:transparent;margin-left:8px}
 button[aria-busy=true]{opacity:.7;cursor:progress}
+
+/* Área dos papais: acesso discreto e painel legível no celular. */
+.nav-actions{display:flex;gap:17px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.nav-admin{border:0;background:transparent;font-size:12px;color:var(--muted);padding:8px 0;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px;min-height:44px}
+.nav-admin:hover,.admin-link:hover{color:var(--green)}
+#admin-dialog{max-width:620px}
+#admin-dialog .stat strong{font-size:29px}
+#admin-error{color:#9d352c;font-weight:600}
+#admin-items{border-top:1px solid var(--line);margin-top:17px}
+#admin-items .admin-row{align-items:center;flex-wrap:wrap}
+#admin-items .admin-row strong{font-size:12px;display:block;font-weight:600}
+#admin-items .admin-row small{display:block;margin-top:3px}
+#admin-items .admin-row button{font-size:11px;min-height:40px;flex-shrink:0}
+#admin-items .admin-row button:disabled{opacity:.45}
+@media(max-width:650px){.nav-actions{gap:10px}.nav-admin{font-size:10px}.nav-link{font-size:10px}#admin-dialog .stat strong{font-size:26px}.admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}#admin-items .admin-row strong{font-size:12px}}
+@media(max-width:370px){.nav{padding-inline:11px}.nav-actions{gap:6px}.nav-admin,.nav-link{font-size:9px}}
 </style></head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><defs>
@@ -55,7 +71,7 @@ button[aria-busy=true]{opacity:.7;cursor:progress}
 <symbol id="cloth" viewBox="0 0 90 90"><g fill="#e5eada" stroke="currentColor"><path d="m18 29 47-8 10 44-47 9Z"/><path d="m20 26 45-7 7 37-46 9Z" fill="#faf8ef"/><path d="m24 30 38-7 6 30-39 7Z" fill="none" stroke-dasharray="2 3"/><path d="m37 37 13-3m-12 7 13-3"/><path d="m27 67 44-8M28 70l44-8" fill="none"/></g></symbol>
 </defs></svg>
 
-<header class="nav"><a class="wordmark" href="#inicio" aria-label="Chá do Heitor, início">Heitor<span style="font-size:13px;margin-left:6px">♡</span></a><a class="nav-link" href="#presentes">Lista de presentes ↗</a></header>
+<header class="nav"><a class="wordmark" href="#inicio" aria-label="Chá do Heitor, início">Heitor<span style="font-size:13px;margin-left:6px">♡</span></a><div class="nav-actions"><a class="nav-link" href="#presentes">Lista de presentes ↗</a><button class="nav-admin" id="admin-open" type="button">Área dos papais</button></div></header>
 <section class="hero" id="inicio"><div class="invitation"><div class="frame">
 <svg class="bow" aria-hidden="true"><use href="#bow"/></svg><p class="eyebrow">CHÁ DE BEBÊ DO</p><h1>Heitor</h1><p class="hero-sub">Um pequeno grande amor.</p>
 <p class="intro">Antes de conhecer esse amor, queremos celebrar sua chegada ao lado de pessoas especiais. Você faz parte dessa história!</p>
@@ -67,11 +83,31 @@ button[aria-busy=true]{opacity:.7;cursor:progress}
 <div class="how"><svg aria-hidden="true"><use href="#gift"/></svg><div><strong>Escolha com carinho, marque com um toque.</strong><br>Você pode escolher mais de um mimo, sem se identificar. Confira as quantidades disponíveis, selecione o que pretende levar e confirme sua intenção de presentear.</div></div>
 <section class="purchase-notice" aria-labelledby="purchase-title"><span class="notice-tag">LEIA ANTES DE ESCOLHER</span><h3 id="purchase-title">Isto não é uma compra ♡</h3><p>Esta lista serve apenas para organizar os presentes e evitar itens repetidos além da quantidade desejada. Aqui você informa sua <strong>intenção de presentear</strong>; não há pagamento nem entrega pelo site.</p><p>Depois de confirmar, <strong>compre o mimo em uma loja física ou no site de sua preferência</strong> e leve-o para o chá do Heitor.</p></section><div class="my-gifts-row"><button class="secondary" id="my-gifts" hidden>Ver meus mimos confirmados</button></div><div class="search-row"><label class="search-label" for="gift-search">Encontre um mimo<input id="gift-search" type="search" placeholder="Buscar presente ou tamanho…" autocomplete="off"></label><span id="results-count" aria-live="polite"></span></div><p class="sync-status" id="sync-status" aria-live="polite">Consultando os mimos disponíveis…</p><nav class="tabs" aria-label="Categorias de presentes"></nav><p class="quantity-help">A quantidade disponível diminui após cada confirmação. Quando todas as unidades de um mimo forem escolhidas, ele sairá da lista.</p><div class="grid" id="gift-grid"></div><p id="empty-results" class="notice" hidden>Nenhum mimo encontrado. Tente outro nome ou escolha outra categoria.</p>
 <div class="closing"><svg aria-hidden="true"><use href="#heart"/></svg><p>O Heitor já é cercado de amor.<br>Obrigada por fazer parte do nosso.</p><small>Esperamos você para celebrar esse momento!</small></div></main>
-<footer><span>Chá do Heitor · feito com amor por nossa família</span></footer>
+<footer><span>Chá do Heitor · feito com amor por nossa família</span><button class="admin-link" id="admin-open-footer" type="button">Área dos papais</button></footer>
 <aside class="selection-bar" aria-label="Suas escolhas"><div class="selection-inner"><div class="selection-summary"><span class="selection-count" id="count">0</span><div class="selection-label" id="selection-label">Seus mimos escolhidos<small>Você pode escolher mais de um mimo.</small></div></div><button class="primary" id="review" disabled>Revisar escolhas <svg aria-hidden="true"><use href="#arrow"/></svg></button></div></aside>
 <dialog id="review-dialog" aria-labelledby="review-title"><div class="dialog-head"><div><p class="eyebrow">UM CARINHO PARA O HEITOR</p><h2 id="review-title">Suas escolhas</h2></div><button class="close" data-close aria-label="Fechar">×</button></div><p class="dialog-text">Confira os mimos e as quantidades que pretende levar. Ao confirmar, essas unidades ficarão reservadas na lista. Isso não realiza uma compra: você deverá comprar os presentes separadamente, onde preferir.</p><ul class="review-list" id="review-list"></ul><div class="notice">Ao confirmar, suas escolhas serão registradas para evitar presentes repetidos. Se algum item acabar enquanto você escolhe, informaremos o que foi realmente reservado.</div><div class="dialog-actions"><button class="secondary" data-close>Continuar escolhendo</button><button class="primary" id="confirm">Confirmar intenção de presentear ♡</button></div></dialog>
 
-<dialog id="mine-dialog" aria-labelledby="mine-title" aria-describedby="purchase-reminder"><div class="dialog-head"><div><p class="eyebrow">SEUS MIMOS</p><h2 id="mine-title">Um carinho a caminho.</h2></div><button class="close" data-close aria-label="Fechar">×</button></div><section class="purchase-notice" id="purchase-reminder"><span class="notice-tag">LEMBRETE IMPORTANTE</span><h3>Isto não é uma compra ♡</h3><p>Você apenas informou sua <strong>intenção de presentear</strong>. A reserva ajuda os convidados a não comprarem itens repetidos além da quantidade desejada.</p><p><strong>Agora, compre os mimos em uma loja física ou no site de sua preferência</strong> e leve-os para o chá do Heitor.</p><p>Não há pagamento, compra ou entrega por esta página.</p></section><p class="dialog-text">Confira abaixo sua intenção de presentear. Se mudar de ideia, libere o item para outro convidado.</p><ul class="review-list" id="mine-list"></ul><p class="dialog-text">Suas escolhas ficam registradas neste navegador. Você pode voltar a esta página para consultá-las ou liberá-las.</p><div class="dialog-actions"><button class="primary" id="mine-ack" data-close>Entendi, vou providenciar o mimo</button></div></dialog><div class="toast" id="toast" role="status" hidden></div>
+<dialog id="mine-dialog" aria-labelledby="mine-title" aria-describedby="purchase-reminder"><div class="dialog-head"><div><p class="eyebrow">SEUS MIMOS</p><h2 id="mine-title">Um carinho a caminho.</h2></div><button class="close" data-close aria-label="Fechar">×</button></div><section class="purchase-notice" id="purchase-reminder"><span class="notice-tag">LEMBRETE IMPORTANTE</span><h3>Isto não é uma compra ♡</h3><p>Você apenas informou sua <strong>intenção de presentear</strong>. A reserva ajuda os convidados a não comprarem itens repetidos além da quantidade desejada.</p><p><strong>Agora, compre os mimos em uma loja física ou no site de sua preferência</strong> e leve-os para o chá do Heitor.</p><p>Não há pagamento, compra ou entrega por esta página.</p></section><p class="dialog-text">Confira abaixo sua intenção de presentear. Se mudar de ideia, libere o item para outro convidado.</p><ul class="review-list" id="mine-list"></ul><p class="dialog-text">Suas escolhas ficam registradas neste navegador. Você pode voltar a esta página para consultá-las ou liberá-las.</p><div class="dialog-actions"><button class="primary" id="mine-ack" data-close>Entendi, vou providenciar o mimo</button></div></dialog><dialog id="admin-dialog" aria-labelledby="admin-title">
+  <div class="dialog-head"><div><p class="eyebrow">ACOMPANHAMENTO DOS PRESENTES</p><h2 id="admin-title">Área dos papais ♡</h2></div><button class="close" data-close aria-label="Fechar">×</button></div>
+  <p class="dialog-text">Um cantinho para Carol e Marcos acompanharem os mimos reservados e corrigirem escolhas, se necessário.</p>
+  <form id="admin-login" class="admin-form">
+    <label for="admin-password">Senha dos papais<input id="admin-password" type="password" autocomplete="off" required placeholder="Digite a senha administrativa" maxlength="128"></label>
+    <p id="admin-error" class="dialog-text" role="alert" hidden></p>
+    <button id="admin-enter" class="primary" type="submit">Entrar no painel</button>
+  </form>
+  <section id="admin-panel" hidden>
+    <div class="admin-stats" aria-label="Resumo das reservas">
+      <div class="stat"><strong id="admin-reserved">0</strong>Unidades reservadas</div>
+      <div class="stat"><strong id="admin-available">100</strong>Unidades disponíveis</div>
+      <div class="stat"><strong id="admin-complete">0</strong>Tipos esgotados</div>
+      <div class="stat"><strong id="admin-total">43</strong>Tipos na lista</div>
+    </div>
+    <p class="dialog-text">Para corrigir um engano, você pode liberar <strong>uma unidade</strong> reservada de cada mimo. A unidade volta a aparecer para os convidados.</p>
+    <div id="admin-items" aria-live="polite"></div>
+    <div class="dialog-actions"><button class="secondary" id="admin-refresh" type="button">Atualizar</button><button class="secondary" id="admin-logout" type="button">Sair do painel</button></div>
+  </section>
+</dialog>
+<div class="toast" id="toast" role="status" hidden></div>
 <script>
 
 'use strict';
@@ -144,6 +180,75 @@ $('#confirm').addEventListener('click',confirmSelection);
 $('#my-gifts').addEventListener('click',()=>{renderMine();$('#mine-title').textContent='Seus mimos confirmados';$('#mine-ack').textContent='Voltar à lista';$('#mine-dialog').showModal();});
 $('#mine-list').addEventListener('click',e=>{const b=e.target.closest('[data-release]');if(b)release(Number(b.dataset.release));});
 $('#sync-status').addEventListener('click',()=>{if(!ready)refreshState();});
+let adminPassword='',adminBusy=false;
+function renderAdmin(inventory){
+ const byId=new Map((inventory||[]).map(x=>[Number(x.id),Number(x.reserved)||0]));
+ const n=items.reduce((sum,g)=>sum+g.desired,0);
+ const count=items.reduce((sum,g)=>sum+Math.max(0,Math.min(g.desired,byId.get(g.id)||0)),0);
+ $('#admin-reserved').textContent=count;
+ $('#admin-available').textContent=n-count;
+ $('#admin-total').textContent=items.length;
+ $('#admin-complete').textContent=items.filter(g=>(byId.get(g.id)||0)>=g.desired).length;
+ $('#admin-items').innerHTML=items.map(g=>{
+   const used=Math.min(g.desired,byId.get(g.id)||0);
+   return `<div class="admin-row"><span><strong>${esc(g.name)}</strong><small>${used} reservados · ${g.desired-used} disponíveis · ${g.desired} desejados</small></span><button class="secondary" data-admin-release="${g.id}" ${used===0||adminBusy?'disabled':''} type="button" aria-label="Liberar uma unidade de ${esc(g.name)}">Liberar 1</button></div>`;
+ }).join('');
+}
+async function refreshAdmin(){
+ if(!adminPassword)return;
+ const data=await api({action:'adminStatus',password:adminPassword});
+ renderAdmin(data.inventory);
+}
+async function openAdmin(){
+ $('#admin-dialog').showModal();
+ if(adminPassword){try{await refreshAdmin();}catch(e){toast(e.message);}}
+}
+$('#admin-open').addEventListener('click',openAdmin);
+$('#admin-open-footer').addEventListener('click',openAdmin);
+$('#admin-login').addEventListener('submit',async e=>{
+ e.preventDefault();if(adminBusy)return;
+ adminBusy=true;$('#admin-enter').disabled=true;$('#admin-error').hidden=true;
+ const pass=$('#admin-password').value;
+ try{
+   const data=await api({action:'adminStatus',password:pass});
+   adminPassword=pass;
+   $('#admin-password').value='';
+   $('#admin-login').hidden=true;$('#admin-panel').hidden=false;
+   renderAdmin(data.inventory);
+ }catch(error){
+   $('#admin-error').textContent=error.message;
+   $('#admin-error').hidden=false;
+ }finally{adminBusy=false;$('#admin-enter').disabled=false;}
+});
+$('#admin-items').addEventListener('click',async e=>{
+ const b=e.target.closest('[data-admin-release]');
+ if(!b||adminBusy||!adminPassword)return;
+ const id=Number(b.dataset.adminRelease),gift=items.find(g=>g.id===id);
+ if(!gift||!window.confirm(`Liberar uma unidade reservada de "${gift.name}"? Ela voltará a ficar disponível para outro convidado.`))return;
+ adminBusy=true;
+ for(const button of $('#admin-items').querySelectorAll('button'))button.disabled=true;
+ try{
+   const res=await api({action:'adminRelease',password:adminPassword,id});
+   if(res.released)toast('Uma unidade foi liberada e voltou para a lista.');
+   await refreshState();
+ }catch(error){toast(error.message);}
+ finally{adminBusy=false;try{await refreshAdmin();}catch(error){toast(error.message);}}
+});
+$('#admin-refresh').addEventListener('click',async()=>{
+ if(adminBusy)return;
+ try{await refreshAdmin();toast('Painel atualizado.');}catch(error){toast(error.message);}
+});
+$('#admin-logout').addEventListener('click',()=>{
+ adminPassword='';$('#admin-panel').hidden=true;$('#admin-login').hidden=false;$('#admin-dialog').close();
+});
+$('#admin-dialog').addEventListener('close',()=>{
+ adminPassword='';$('#admin-password').value='';$('#admin-panel').hidden=true;$('#admin-login').hidden=false;
+ $('#admin-error').hidden=true;
+});
+if(location.hash==='#papais'){
+ // Acesso direto: https://chadoheitor.netlify.app/#papais
+ window.addEventListener('load',()=>{openAdmin();});
+}
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 window.addEventListener('focus',()=>{if(Date.now()-lastSync>45000&&!busy)refreshState();});
 function syncSelectionBarHeight(){const height=Math.ceil(document.querySelector('.selection-bar').getBoundingClientRect().height);document.documentElement.style.setProperty('--selection-bar-height',height+'px');}

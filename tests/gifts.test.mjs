@@ -60,3 +60,27 @@ test('nenhum pedido inválido altera estoque',async()=>{
   assert.equal((await runGiftAction(s,{action:'reserve',token:'bad',selections:[{id:2,qty:1}]})).status,400);
   assert.equal(reserved(await status(s,t1),2),0);
 });
+
+test('o painel exige senha secreta configurada no servidor e não aceita senha errada',async()=>{
+  const s=new MockStore();
+  await reserve(s,t1,1,2);
+  assert.equal((await runGiftAction(s,{action:'adminStatus',password:'teste'})).status,503);
+  assert.equal((await runGiftAction(s,{action:'adminRelease',password:'senha-invalida',id:1},'uma-senha-super-segura-123')).status,401);
+  assert.equal(reserved(await status(s,t3),1),2);
+  const admin=await runGiftAction(s,{action:'adminStatus',password:'uma-senha-super-segura-123'},'uma-senha-super-segura-123');
+  assert.equal(reserved(admin,1),2);
+  assert.equal(admin.mine,undefined);
+});
+
+test('os papais podem liberar uma unidade reservada por vez sem expor os tokens',async()=>{
+  const s=new MockStore();
+  await reserve(s,t1,1,2);
+  const secret='uma-senha-super-segura-123';
+  const action={action:'adminRelease',password:secret,id:1};
+  assert.equal((await runGiftAction(s,action,secret)).released,1);
+  assert.equal(reserved(await status(s,t2),1),1);
+  assert.equal((await runGiftAction(s,action,secret)).released,1);
+  assert.equal(reserved(await status(s,t2),1),0);
+  assert.equal((await runGiftAction(s,action,secret)).status,409);
+  assert.equal((await reserve(s,t2,1,3)).reservedUnits.length,3);
+});
