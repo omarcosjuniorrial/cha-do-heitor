@@ -15,11 +15,11 @@ Site responsivo para o chá de bebê, pronto para hospedagem no **Netlify** com 
 
 ## Publicação
 
-**Estado atual:** o projeto Netlify `cha-do-heitor` foi criado, mas **nenhum deploy foi executado**. Não distribua o endereço até a implantação e o teste da função `/api/presentes`.
+**Projeto Netlify:** `chadoheitor` (https://chadoheitor.netlify.app). Conexão ao GitHub informada em 09/10/2026; confirme no painel do Netlify que o último deploy está como **Published** e teste a função `/api/presentes` antes de distribuir o link.
 
-1. No GitHub conectado à conta `marcosjunior.rial@gmail.com`, crie um repositório vazio chamado `cha-do-heitor`.
-2. Faça o upload de todos os arquivos e diretórios deste ZIP, preservando as pastas, na raiz do repositório (ou envie com `git push`). O `netlify.toml` deve estar na raiz.
-3. Em https://app.netlify.com/projects/cha-do-heitor, associe o repositório GitHub à implantação contínua. Publish dir: `public`, Functions dir: `netlify/functions`. O `netlify.toml` define ambos automaticamente. Se a interface não permitir conectar esse site vazio ao GitHub, importe o repositório como novo projeto e só distribua o novo endereço **depois** de confirmar.
+1. Repositório criado e preenchido: https://github.com/omarcosjuniorrial/cha-do-heitor.
+2. Código já enviado, incluindo `netlify.toml` na raiz.
+3. No painel Netlify (https://app.netlify.com/projects/chadoheitor), confira a conexão GitHub e a primeira implantação. Publish dir: `public`, Functions dir: `netlify/functions`, definidos pelo `netlify.toml`.
 4. Aguarde o Netlify marcar o deploy como **Published**, abra a página e confirme que os presentes aparecem (não deve mostrar erro de sincronização). Teste a confirmação em duas abas/navegadores e o esgotamento de um item de uma unidade.
 
 **Importante:** não publicar apenas `public/` por drag-and-drop, pois isso não inclui a função que registra reservas. Deploy pela integração Git ou via CLI de build do Netlify.
