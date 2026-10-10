@@ -84,3 +84,39 @@ test('os papais podem liberar uma unidade reservada por vez sem expor os tokens'
   assert.equal((await runGiftAction(s,action,secret)).status,409);
   assert.equal((await reserve(s,t2,1,3)).reservedUnits.length,3);
 });
+test('os pais podem ampliar um mimo esgotado, sem afetar a reserva antiga',async()=>{
+  const s=new MockStore(),pwd='uma-senha-super-segura-123';
+  await reserve(s,t1,2,1);
+  const before=await status(s,t2);
+  assert.equal(before.inventory.find(x=>x.id===2).available,0);
+  assert.equal((await runGiftAction(s,{action:'adminAddUnit',password:'errada',id:2},pwd)).status,401);
+  const added=await runGiftAction(s,{action:'adminAddUnit',password:pwd,id:2},pwd);
+  assert.equal(added.desired,2);
+  const after=await status(s,t2);
+  assert.deepEqual(after.inventory.find(x=>x.id===2),{id:2,reserved:1,desired:2,available:1});
+  const second=await reserve(s,t2,2,1);
+  assert.deepEqual(second.reservedUnits,[{id:2,slot:2}]);
+  assert.deepEqual((await status(s,t1)).mine,[{id:2,slot:1}]);
+  const panel=await runGiftAction(s,{action:'adminStatus',password:pwd},pwd);
+  assert.equal(panel.inventory.find(x=>x.id===2).reserved,2);
+  assert.equal(panel.mine,undefined);
+  assert.equal(JSON.stringify(panel).includes(t1),false);
+  assert.equal(JSON.stringify(panel).includes(t2),false);
+});
+test('uma reserva adicional pode ser liberada pelo convidado ou pelos papais',async()=>{
+  const s=new MockStore(),pwd='uma-senha-super-segura-123';
+  await runGiftAction(s,{action:'adminAddUnit',password:pwd,id:2},pwd);
+  await reserve(s,t1,2,1);
+  await reserve(s,t2,2,1);
+  assert.equal((await release(s,t2,2)).released,1);
+  assert.equal(reserved(await status(s,t3),2),1);
+  assert.equal((await runGiftAction(s,{action:'adminRelease',password:pwd,id:2},pwd)).released,1);
+  assert.equal(reserved(await status(s,t3),2),0);
+  assert.equal((await status(s,t3)).inventory.find(x=>x.id===2).desired,2);
+});
+test('aumento simultâneo de capacidade preserva todas as unidades',async()=>{
+  const s=new MockStore(),pwd='uma-senha-super-segura-123',change={action:'adminAddUnit',password:pwd,id:2};
+  const [a,b]=await Promise.all([runGiftAction(s,change,pwd),runGiftAction(s,change,pwd)]);
+  assert.equal(a.added,1);assert.equal(b.added,1);
+  assert.equal((await status(s,t3)).inventory.find(x=>x.id===2).desired,3);
+});
