@@ -74,7 +74,14 @@ button[aria-busy=true]{opacity:.7;cursor:progress}
  .grid{gap:18px}
  .card{display:flex;flex-direction:column}
  .illustration.product-photo{width:100%;height:clamp(245px,73vw,330px);min-height:0;padding:12px 18px}
- .card-body{width:100%;padding:15px 17px 18px}
+ .card-body{display:flex;flex-direction:column;width:100%;padding:12px 17px 18px}
+ /* Nome diretamente abaixo da fotografia; categoria e detalhes em seguida. */
+ .card-body h3{order:0;margin:1px 0 8px;font-size:clamp(23px,6.2vw,29px);line-height:1.2}
+ .card-body .category{order:1;margin-bottom:8px}
+ .card-body .description{order:2}
+ .card-body .quantity{order:3}
+ .card-body .pick{order:4}
+ .card-body .stepper{order:5}
 }
 @media(max-width:355px){
  .illustration.product-photo{width:100%;height:clamp(225px,70vw,248px);padding:10px 14px}
