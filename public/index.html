@@ -55,16 +55,49 @@ button[aria-busy=true]{opacity:.7;cursor:progress}
 @media(max-width:650px){.nav-actions{gap:10px}.nav-admin{font-size:10px}.nav-link{font-size:10px}#admin-dialog .stat strong{font-size:26px}.admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}#admin-items .admin-row strong{font-size:12px}}
 @media(max-width:370px){.nav{padding-inline:11px}.nav-actions{gap:6px}.nav-admin,.nav-link{font-size:9px}}
 </style><style id="photos-style">
-/* Fotografias de referência: proporção consistente nos cartões sem mudar o layout original. */
-.illustration.product-photo{height:188px;padding:12px;background:#f6f5ee}
+/* Fotos contidas na própria área, sem avançar sobre os títulos. */
+.illustration.product-photo {
+  position:relative;
+  isolation:isolate;
+  box-sizing:border-box;
+  height:188px;
+  padding:12px;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  background:#f6f5ee;
+}
 .illustration.product-photo:before{display:none}
-.illustration.product-photo .gift-photo{position:relative;width:100%;height:100%;object-fit:contain;object-position:center;border-radius:4px;mix-blend-mode:multiply}
+.illustration.product-photo .gift-photo {
+  position:absolute;
+  display:block;
+  top:12px;
+  left:12px;
+  width:calc(100% - 24px);
+  height:calc(100% - 24px);
+  max-width:calc(100% - 24px);
+  max-height:calc(100% - 24px);
+  min-height:0;
+  min-width:0;
+  object-fit:contain;
+  object-position:center;
+  border-radius:4px;
+  mix-blend-mode:normal;
+}
 .illustration.product-photo .gift-photo[hidden]{display:none}
 .illustration.product-photo .photo-fallback{position:relative;color:#7d9477}
 .illustration.product-photo .photo-fallback[hidden]{display:none}
+.card .card-body {position:relative;z-index:1;background:#fdfcf6}
 .photo-hint{font-size:11px;line-height:1.6;color:#697365;margin:-10px 0 18px;font-style:italic}
-@media(max-width:650px){.illustration.product-photo{height:150px;padding:8px}.photo-hint{margin:0 0 15px}}
-@media(max-width:355px){.illustration.product-photo{height:129px;padding:7px}}
+@media(max-width:650px) {
+  .illustration.product-photo{height:150px;padding:8px}
+  .illustration.product-photo .gift-photo{top:8px;left:8px;width:calc(100% - 16px);height:calc(100% - 16px);max-width:calc(100% - 16px);max-height:calc(100% - 16px)}
+  .photo-hint{margin:0 0 15px}
+}
+@media(max-width:355px) {
+  .illustration.product-photo{height:129px;padding:7px}
+  .illustration.product-photo .gift-photo{top:7px;left:7px;width:calc(100% - 14px);height:calc(100% - 14px);max-width:calc(100% - 14px);max-height:calc(100% - 14px)}
+}
 </style></head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><defs>
