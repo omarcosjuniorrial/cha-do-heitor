@@ -55,36 +55,32 @@ button[aria-busy=true]{opacity:.7;cursor:progress}
 @media(max-width:650px){.nav-actions{gap:10px}.nav-admin{font-size:10px}.nav-link{font-size:10px}#admin-dialog .stat strong{font-size:26px}.admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}#admin-items .admin-row strong{font-size:12px}}
 @media(max-width:370px){.nav{padding-inline:11px}.nav-actions{gap:6px}.nav-admin,.nav-link{font-size:9px}}
 </style><style id="photos-style">
-/* Fotografias de referência: proporção consistente nos cartões sem mudar o layout original. */
+/* Product photography with original desktop layout retained. */
 .illustration.product-photo{height:188px;padding:12px;background:#f6f5ee}
 .illustration.product-photo:before{display:none}
-.illustration.product-photo .gift-photo{position:relative;width:100%;height:100%;object-fit:contain;object-position:center;border-radius:4px;mix-blend-mode:multiply}
+.illustration.product-photo .gift-photo{position:relative;display:block;width:100%;height:100%;object-fit:contain;object-position:center;border-radius:4px;mix-blend-mode:multiply}
 .illustration.product-photo .gift-photo[hidden]{display:none}
 .illustration.product-photo .photo-fallback{position:relative;color:#7d9477}
 .illustration.product-photo .photo-fallback[hidden]{display:none}
 .photo-hint{font-size:11px;line-height:1.6;color:#697365;margin:-10px 0 18px;font-style:italic}
-/* No celular a fotografia é a protagonista de cada cartão. */
+/* Keep product name in document order immediately following its photograph. */
+.card-body .gift-title{display:block;position:static;visibility:visible;opacity:1;height:auto;overflow:visible;overflow-wrap:break-word}
 @media(max-width:650px){
- .illustration.product-photo{height:clamp(205px,43vw,250px);padding:12px 14px;background:#fffdf8;border-bottom:1px solid #e6e9df}
+ .illustration.product-photo{height:clamp(164px,34.4vw,200px);padding:10px 12px;background:#fffdf8;border-bottom:1px solid #e6e9df}
  .illustration.product-photo .gift-photo{width:100%;height:100%;max-width:none;object-fit:contain;object-position:center;mix-blend-mode:normal}
  .photo-hint{margin:0 0 15px}
  .card{border-radius:11px}
+ .card-body .gift-title{font-size:clamp(21px,5.3vw,26px);line-height:1.22;color:var(--ink);margin:0 0 9px;font-weight:400;min-height:0}
+ .card-body .category{display:block;margin-bottom:7px}
 }
 @media(max-width:560px){
- .grid{gap:18px}
- .card{display:flex;flex-direction:column}
- .illustration.product-photo{width:100%;height:clamp(245px,73vw,330px);min-height:0;padding:12px 18px}
- .card-body{display:flex;flex-direction:column;width:100%;padding:12px 17px 18px}
- /* Nome diretamente abaixo da fotografia; categoria e detalhes em seguida. */
- .card-body h3{order:0;margin:1px 0 8px;font-size:clamp(23px,6.2vw,29px);line-height:1.2}
- .card-body .category{order:1;margin-bottom:8px}
- .card-body .description{order:2}
- .card-body .quantity{order:3}
- .card-body .pick{order:4}
- .card-body .stepper{order:5}
+ .grid{gap:17px}
+ .card{display:flex;flex-direction:column;align-items:stretch;height:auto}
+ .illustration.product-photo{flex:0 0 auto;width:100%;height:clamp(196px,58.4vw,264px);min-height:0;padding:10px 15px}
+ .card-body{display:block;flex:0 0 auto;width:100%;min-width:0;padding:14px 17px 18px}
 }
 @media(max-width:355px){
- .illustration.product-photo{width:100%;height:clamp(225px,70vw,248px);padding:10px 14px}
+ .illustration.product-photo{width:100%;height:clamp(180px,56vw,199px);padding:8px 12px}
 }
 </style></head>
 <body>
@@ -158,7 +154,7 @@ function toast(message){$('#toast').textContent=message;$('#toast').hidden=false
 function render(){
  const cats=['Todos',...new Set(items.map(i=>i.category))];
  $('.tabs').innerHTML=cats.map(c=>`<button class="tab ${active===c?'active':''}" aria-pressed="${active===c}" data-category="${esc(c)}">${esc(c)}</button>`).join('');
- $('#gift-grid').innerHTML=visibleItems().map(i=>`<article class="card ${selected.has(i.id)?'chosen':''}"><div class="illustration product-photo"><img class="gift-photo" src="${esc((window.HEITOR_GIFT_PHOTOS||{})[i.id]||'')}" alt="Foto ilustrativa: ${esc(i.name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><svg class="photo-fallback" aria-hidden="true" hidden><use href="#${i.icon}"/></svg></div><div class="card-body"><span class="category">${esc(i.category)}</span><h3>${esc(i.name)}</h3><p class="description">${esc(i.description)}</p><p class="quantity"><strong>${remaining(i)} de ${i.desired}</strong> disponíveis<small>Quantidade restante para presentear</small></p><button class="pick" data-pick="${i.id}" aria-pressed="${selected.has(i.id)}" aria-label="${selected.has(i.id)?'Desmarcar':'Escolher'} ${esc(i.name)}"><span class="check" aria-hidden="true">${selected.has(i.id)?'✓':''}</span>${selected.has(i.id)?'Vou levar esse mimo':'Quero presentear'}</button>${selected.has(i.id)?`<div class="stepper" aria-label="Quantidade de ${esc(i.name)}"><button data-step="-1" data-id="${i.id}" aria-label="Diminuir quantidade de ${esc(i.name)}">−</button><span>Vou levar <output>${selected.get(i.id)}</output></span><button data-step="1" data-id="${i.id}" ${selected.get(i.id)>=remaining(i)?'disabled':''} aria-label="Aumentar quantidade de ${esc(i.name)}">+</button></div>`:''}</div></article>`).join('');
+ $('#gift-grid').innerHTML=visibleItems().map(i=>`<article class="card ${selected.has(i.id)?'chosen':''}"><div class="illustration product-photo"><img class="gift-photo" src="${esc((window.HEITOR_GIFT_PHOTOS||{})[i.id]||'')}" alt="Foto ilustrativa: ${esc(i.name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><svg class="photo-fallback" aria-hidden="true" hidden><use href="#${i.icon}"/></svg></div><div class="card-body"><h3 class="gift-title">${esc(i.name)}</h3><span class="category">${esc(i.category)}</span><p class="description">${esc(i.description)}</p><p class="quantity"><strong>${remaining(i)} de ${i.desired}</strong> disponíveis<small>Quantidade restante para presentear</small></p><button class="pick" data-pick="${i.id}" aria-pressed="${selected.has(i.id)}" aria-label="${selected.has(i.id)?'Desmarcar':'Escolher'} ${esc(i.name)}"><span class="check" aria-hidden="true">${selected.has(i.id)?'✓':''}</span>${selected.has(i.id)?'Vou levar esse mimo':'Quero presentear'}</button>${selected.has(i.id)?`<div class="stepper" aria-label="Quantidade de ${esc(i.name)}"><button data-step="-1" data-id="${i.id}" aria-label="Diminuir quantidade de ${esc(i.name)}">−</button><span>Vou levar <output>${selected.get(i.id)}</output></span><button data-step="1" data-id="${i.id}" ${selected.get(i.id)>=remaining(i)?'disabled':''} aria-label="Aumentar quantidade de ${esc(i.name)}">+</button></div>`:''}</div></article>`).join('');
  const available=items.filter(i=>remaining(i)>0).length;
  $('#results-count').textContent=ready?visibleItems().length+' de '+available+' sugestões disponíveis':'';
  $('#empty-results').hidden=!ready||visibleItems().length>0;
